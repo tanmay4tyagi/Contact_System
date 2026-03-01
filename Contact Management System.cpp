@@ -39,7 +39,7 @@ public:
         email = e;    
     }
 
-    // Getters needed for searching and rewriting the file
+    
     string getName() { return name; }
     string getPhone() { return phone; }
     string getEmail() { return email; }
