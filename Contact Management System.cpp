@@ -99,7 +99,7 @@ int main() {
                         outFile << tempName << "," << tempPhone << "," << tempEmail << endl;
                         outFile.close();
                     }
-                    cout << "Contact saved permanently!" << endl;
+                    cout << "Contact saved successfully!" << endl;
                 } else {
                     cout << "Phonebook is full!" << endl;
                 }
@@ -119,8 +119,7 @@ int main() {
                 break;
 
             case 3: {
-                // NEW: Search Logic
-                if (totalContacts == 0) {
+                    if (totalContacts == 0) {
                     cout << "Your phonebook is empty." << endl;
                     break;
                 }
@@ -147,7 +146,6 @@ int main() {
             }
 
             case 4: {
-                // NEW: Delete Logic
                 if (totalContacts == 0) {
                     cout << "Your phonebook is empty." << endl;
                     break;
