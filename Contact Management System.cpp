@@ -72,8 +72,8 @@ int main() {
         cout << "\n--- Advanced Contact Management System ---" << endl;
         cout << "1. Add a New Contact" << endl;
         cout << "2. Display All Contacts" << endl;
-        cout << "3. Search for a Contact" << endl; // NEW
-        cout << "4. Delete a Contact" << endl;     // NEW
+        cout << "3. Search for a Contact" << endl; 
+        cout << "4. Delete a Contact" << endl;     
         cout << "5. Exit" << endl;
         cout << "Enter your choice: ";
         cin >> choice;
