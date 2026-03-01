@@ -140,14 +140,14 @@ int main() {
                 }
 
                 if (!found) {
-                    cout << "Contact not found." << endl;
+                    cout << "Contact not found (T_T) " << endl;
                 }
                 break;
             }
 
             case 4: {
                 if (totalContacts == 0) {
-                    cout << "Your phonebook is empty." << endl;
+                    cout << "Your phonebook is empty" << endl;
                     break;
                 }
 
@@ -161,7 +161,6 @@ int main() {
                     if (phonebook[i].getName() == deleteName) {
                         found = true;
                         
-                        // Shift all subsequent contacts to the left by 1
                         for (int j = i; j < totalContacts - 1; j++) {
                             phonebook[j] = phonebook[j + 1]; 
                         }
