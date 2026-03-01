@@ -49,6 +49,7 @@ public:
 };
 
 void displayContact(Contact c) {
+    cout<< "_NAME_____________________PHONE______________________EMAIL" << endl;
     cout << "Name: " << c.name << " | Phone: " << c.phone << " | Email: " << c.email << endl;
 }
 
