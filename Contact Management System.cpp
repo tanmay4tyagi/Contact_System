@@ -44,7 +44,7 @@ public:
     string getPhone() { return phone; }
     string getEmail() { return email; }
 
-    // UNIT 3: Friend Function
+    
     friend void displayContact(Contact c);
 };
 
