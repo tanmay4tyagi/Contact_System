@@ -49,8 +49,7 @@ public:
 };
 
 void displayContact(Contact c) {
-    cout<< "_NAME_____________________PHONE______________________EMAIL" << endl;
-    cout << "Name: " << c.name << " | Phone: " << c.phone << " | Email: " << c.email << endl;
+        cout << "" << c.name << " | " << c.phone << " | " << c.email << endl;
 }
 
 int main() {
@@ -111,6 +110,7 @@ int main() {
                     cout << "Your phonebook is empty." << endl;
                 } else {
                     cout << "\n--- Saved Contacts ---" << endl;
+                    cout<< "       NAME         PHONE         EMAIL" << endl;
                     for (int i = 0; i < totalContacts; i++) {
                         cout << i + 1 << ". ";
                         displayContact(phonebook[i]); 
