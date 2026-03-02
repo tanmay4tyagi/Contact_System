@@ -67,7 +67,7 @@ int main() {
         }
         inFile.close();
     }
-
+    // Main choice Interface
     do {
         cout << "\n--- Advanced Contact Management System ---" << endl;
         cout << "1. Add a New Contact" << endl;
