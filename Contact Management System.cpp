@@ -4,14 +4,14 @@
 
 using namespace std;
 
-// UNIT 3: Base Class
+// Base Class
 class Person {
 protected: 
     string name;
     string phone;
 
 public:
-    // UNIT 2: Constructors
+    // Constructors
     Person() {
         name = "Unknown";
         phone = "Unknown";
@@ -23,7 +23,7 @@ public:
     }
 };
 
-// UNIT 3: Single Inheritance
+// Single Inheritance
 class Contact : public Person {
 private:
     string email;
@@ -135,7 +135,7 @@ int main() {
                         cout << "\n--- Contact Found ---" << endl;
                         displayContact(phonebook[i]);
                         found = true;
-                        break; // Stop searching once found
+                        break;
                     }
                 }
 
@@ -169,7 +169,6 @@ int main() {
                         cout << "Contact deleted successfully." << endl;
 
                         // Overwrite the text file with the newly updated array
-                        // Notice we removed ios::app, so it creates a fresh file
                         ofstream outFile("contacts.txt"); 
                         if (outFile.is_open()) {
                             for (int k = 0; k < totalContacts; k++) {
