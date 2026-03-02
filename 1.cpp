@@ -1,141 +1,200 @@
 #include <iostream>
+#include <fstream>
 #include <string>
-#include <vector> // NEW: The library needed to use vectors
+#include <cstdio>   // for remove() and rename()
 
 using namespace std;
 
-// 1. CLASS & CONSTRUCTORS: The Base Class
+// ================= BASE CLASS =================
 class Person {
 protected:
     string name;
     string phone;
 
 public:
-    // Default Constructor
     Person() {
-        name = "Unknown";
-        phone = "Unknown";
+        name = "";
+        phone = "";
     }
 
-    // Parameterized Constructor
     Person(string n, string p) {
         name = n;
         phone = p;
     }
 };
 
-// 2. INHERITANCE: The Derived Class
+// ================= DERIVED CLASS =================
 class Contact : public Person {
 private:
     string email;
 
 public:
-    // Constructor using initializer list to call the Base Constructor
     Contact() : Person() {
-        email = "Unknown";
+        email = "";
     }
 
-    // Method to set all details
     void setDetails(string n, string p, string e) {
         name = n;
         phone = p;
         email = e;
     }
 
-    // Getters
-    string getName() { return name; }
-    
-    // Method to display a single contact
+    string getName() {
+        return name;
+    }
+
+    string getPhone() {
+        return phone;
+    }
+
+    string getEmail() {
+        return email;
+    }
+
     void displayContact() {
-        cout << "Name: " << name << " | Phone: " << phone << " | Email: " << email << endl;
+        cout << "Name  : " << name << endl;
+        cout << "Phone : " << phone << endl;
+        cout << "Email : " << email << endl;
+        cout << "------------------------" << endl;
     }
 };
 
+// ================= MAIN FUNCTION =================
 int main() {
-    // 3. VECTOR: Replacing the old array!
-    vector<Contact> phonebook; 
+
     int choice;
 
     do {
-        cout << "\n--- Vector Contact Management System ---" << endl;
-        cout << "1. Add a New Contact" << endl;
+        cout << "\n===== FILE CONTACT MANAGEMENT SYSTEM =====" << endl;
+        cout << "1. Add New Contact" << endl;
         cout << "2. Display All Contacts" << endl;
-        cout << "3. Delete a Contact" << endl;
+        cout << "3. Delete Contact" << endl;
         cout << "4. Exit" << endl;
         cout << "Enter your choice: ";
         cin >> choice;
+        cin.ignore();   // clear newline from buffer
 
         switch (choice) {
-            case 1: {
-                string tempName, tempPhone, tempEmail;
-                Contact newContact; // Create a temporary contact object
 
-                cin.ignore();
-                cout << "Enter Name: ";
-                getline(cin, tempName);
-                cout << "Enter Phone Number: ";
-                getline(cin, tempPhone);
-                cout << "Enter Email: ";
-                getline(cin, tempEmail);
+        // ================= ADD CONTACT =================
+        case 1: {
+            Contact newContact;
+            string name, phone, email;
 
-                // Set the details of the temporary contact
-                newContact.setDetails(tempName, tempPhone, tempEmail);
+            cout << "Enter Name: ";
+            getline(cin, name);
 
-                // Add it to the end of the vector
-                phonebook.push_back(newContact); 
-                cout << "Contact added successfully!" << endl;
+            cout << "Enter Phone: ";
+            getline(cin, phone);
+
+            cout << "Enter Email: ";
+            getline(cin, email);
+
+            newContact.setDetails(name, phone, email);
+
+            ofstream outFile("contacts.txt", ios::app);
+
+            if (!outFile) {
+                cout << "Error opening file!" << endl;
                 break;
             }
 
-            case 2:
-                // check if the vector is empty using .empty()
-                if (phonebook.empty()) { 
-                    cout << "Your phonebook is empty." << endl;
-                } else {
-                    cout << "\n--- Saved Contacts ---" << endl;
-                    // .size() automatically knows exactly how many contacts exist
-                    for (int i = 0; i < phonebook.size(); i++) { 
-                        cout << i + 1 << ". ";
-                        phonebook[i].displayContact();
-                    }
-                }
-                break;
+            outFile << newContact.getName() << endl;
+            outFile << newContact.getPhone() << endl;
+            outFile << newContact.getEmail() << endl;
+            outFile << "-----" << endl;
 
-            case 3: {
-                if (phonebook.empty()) {
-                    cout << "Your phonebook is empty." << endl;
-                    break;
-                }
+            outFile.close();
 
-                string deleteName;
-                bool found = false;
-                cin.ignore();
-                cout << "Enter the Exact Name to Delete: ";
-                getline(cin, deleteName);
-
-                for (int i = 0; i < phonebook.size(); i++) {
-                    if (phonebook[i].getName() == deleteName) {
-                        found = true;
-                        // Vectors have a built-in erase function! No manual shifting needed.
-                        phonebook.erase(phonebook.begin() + i); 
-                        cout << "Contact deleted successfully." << endl;
-                        break;
-                    }
-                }
-
-                if (!found) {
-                    cout << "Contact not found." << endl;
-                }
-                break;
-            }
-
-            case 4:
-                cout << "Exiting the program. Goodbye!" << endl;
-                break;
-
-            default:
-                cout << "Invalid choice! Please try again." << endl;
+            cout << "Contact added successfully!" << endl;
+            break;
         }
+
+        // ================= DISPLAY CONTACTS =================
+        case 2: {
+            ifstream inFile("contacts.txt");
+
+            if (!inFile) {
+                cout << "No contacts found." << endl;
+                break;
+            }
+
+            string name, phone, email, separator;
+
+            cout << "\n===== SAVED CONTACTS =====" << endl;
+
+            while (getline(inFile, name)) {
+
+                getline(inFile, phone);
+                getline(inFile, email);
+                getline(inFile, separator);
+
+                cout << "Name  : " << name << endl;
+                cout << "Phone : " << phone << endl;
+                cout << "Email : " << email << endl;
+                cout << "------------------------" << endl;
+            }
+
+            inFile.close();
+            break;
+        }
+
+        // ================= DELETE CONTACT =================
+        case 3: {
+            string deleteName;
+            bool found = false;
+
+            cout << "Enter Exact Name to Delete: ";
+            getline(cin, deleteName);
+
+            ifstream inFile("contacts.txt");
+            ofstream tempFile("temp.txt");
+
+            if (!inFile) {
+                cout << "No contacts found." << endl;
+                break;
+            }
+
+            string name, phone, email, separator;
+
+            while (getline(inFile, name)) {
+
+                getline(inFile, phone);
+                getline(inFile, email);
+                getline(inFile, separator);
+
+                if (name != deleteName) {
+                    tempFile << name << endl;
+                    tempFile << phone << endl;
+                    tempFile << email << endl;
+                    tempFile << "-----" << endl;
+                } else {
+                    found = true;
+                }
+            }
+
+            inFile.close();
+            tempFile.close();
+
+            remove("contacts.txt");
+            rename("temp.txt", "contacts.txt");
+
+            if (found)
+                cout << "Contact deleted successfully!" << endl;
+            else
+                cout << "Contact not found." << endl;
+
+            break;
+        }
+
+        case 4:
+            cout << "Exiting program. Goodbye!" << endl;
+            break;
+
+        default:
+            cout << "Invalid choice! Try again." << endl;
+        }
+
     } while (choice != 4);
 
     return 0;
