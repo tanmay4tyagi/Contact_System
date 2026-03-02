@@ -93,7 +93,7 @@ int main() {
                         if (tempPhone.length() < 10 || tempPhone.length() > 15) {
                             cout<< "Invalid phone number length" << endl;
                         }
-                         else if (tempEmail.find('@') == string::npos || tempEmail.find('.') == string::npos) {
+                         else if (tempEmail.find('@') == string || tempEmail.find('.') == string::npos) {
                             cout << "Invalid email format" << endl;
                         }
                     phonebook[totalContacts].setDetails(tempName, tempPhone, tempEmail);
