@@ -90,7 +90,12 @@ int main() {
                     getline(cin, tempPhone);
                     cout << "Enter Email: ";
                     getline(cin, tempEmail);
-                    
+                        if (tempPhone.length() < 10 || tempPhone.length() > 15) {
+                            cout<< "Invalid phone number length" << endl;
+                        }
+                         else if (tempEmail.find('@') == string::npos || tempEmail.find('.') == string::npos) {
+                            cout << "Invalid email format" << endl;
+                        }
                     phonebook[totalContacts].setDetails(tempName, tempPhone, tempEmail);
                     totalContacts++;
                     
