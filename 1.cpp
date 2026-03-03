@@ -25,7 +25,7 @@ public:
 
 // ================= DERIVED CLASS =================
 class Contact : public Person {
-private:
+private:   
     string email;
 
 public:

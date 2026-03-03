@@ -1,17 +1,17 @@
 #include <iostream>
 #include <string>
-#include <fstream> 
+#include <fstream>
+#include <cctype>
 
 using namespace std;
 
-// Base Class
+// ================= BASE CLASS =================
 class Person {
-protected: 
+protected:
     string name;
     string phone;
 
 public:
-    // Constructors
     Person() {
         name = "Unknown";
         phone = "Unknown";
@@ -23,7 +23,7 @@ public:
     }
 };
 
-// Single Inheritance
+// ================= DERIVED CLASS =================
 class Contact : public Person {
 private:
     string email;
@@ -34,172 +34,233 @@ public:
     }
 
     void setDetails(string n, string p, string e) {
-        name = n;     
-        phone = p;    
-        email = e;    
+        name = n;
+        phone = p;
+        email = e;
     }
 
-    
     string getName() { return name; }
     string getPhone() { return phone; }
     string getEmail() { return email; }
 
-    
     friend void displayContact(Contact c);
 };
 
 void displayContact(Contact c) {
-        cout << "" << c.name << " | " << c.phone << " | " << c.email << endl;
+    cout << c.name << " | " << c.phone << " | " << c.email << endl;
 }
 
+// ================= VALIDATION FUNCTIONS =================
+bool isValidPhone(string phone) {
+
+    if (phone.empty()) return false;
+
+    if (phone[0] != '+')
+        return false;
+
+    if (phone.length() < 12)
+        return false;
+
+    for (int i = 1; i < phone.length(); i++) {
+        if (!isdigit(phone[i]))
+            return false;
+    }
+
+    return true;
+}
+
+bool isValidEmail(string email) {
+
+    int atPos = email.find('@');
+    int dotPos = email.find('.', atPos);
+
+    if (atPos == string::npos || dotPos == string::npos)
+        return false;
+
+    if (atPos > dotPos)
+        return false;
+
+    if (dotPos == email.length() - 1)
+        return false;
+
+    return true;
+}
+
+// ================= MAIN =================
 int main() {
-    Contact phonebook[100]; 
+
+    Contact phonebook[100];
     int totalContacts = 0;
     int choice;
 
-    // Load contacts on startup
-    ifstream inFile("contacts.txt"); 
+    // Load contacts from file
+    ifstream inFile("contacts.txt");
     if (inFile.is_open()) {
         string n, p, e;
-        while (getline(inFile, n, ',') && getline(inFile, p, ',') && getline(inFile, e)) {
+        while (getline(inFile, n, ',') &&
+               getline(inFile, p, ',') &&
+               getline(inFile, e)) {
+
             phonebook[totalContacts].setDetails(n, p, e);
             totalContacts++;
         }
         inFile.close();
     }
-    // Main choice Interface
+
     do {
         cout << "\n--- Advanced Contact Management System ---" << endl;
         cout << "1. Add a New Contact" << endl;
         cout << "2. Display All Contacts" << endl;
-        cout << "3. Search for a Contact" << endl; 
-        cout << "4. Delete a Contact" << endl;     
+        cout << "3. Search for a Contact" << endl;
+        cout << "4. Delete a Contact" << endl;
         cout << "5. Exit" << endl;
         cout << "Enter your choice: ";
         cin >> choice;
 
         switch (choice) {
-            case 1:
-                if (totalContacts < 100) {
-                    string tempName, tempPhone, tempEmail;
-                    cin.ignore(); 
 
-                    cout << "Enter Name: ";
-                    getline(cin, tempName); 
-                    cout << "Enter Phone Number: ";
+        case 1:
+            if (totalContacts < 100) {
+
+                string tempName, tempPhone, tempEmail;
+                cin.ignore();
+
+                cout << "Enter Name: ";
+                getline(cin, tempName);
+
+                // PHONE VALIDATION LOOP
+                do {
+                    cout << "Enter Phone Number (+CountryCodeNumber): ";
                     getline(cin, tempPhone);
+
+                    if (!isValidPhone(tempPhone)) {
+                        cout << "Invalid phone number!" << endl;
+                        cout << "Example: +919876543210" << endl;
+                    }
+
+                } while (!isValidPhone(tempPhone));
+
+                // EMAIL VALIDATION LOOP
+                do {
                     cout << "Enter Email: ";
                     getline(cin, tempEmail);
-                        if (tempPhone.length() < 10 || tempPhone.length() > 15) {
-                            cout<< "Invalid phone number length" << endl;
-                        }
-                         else if (tempEmail.find('@') == string::npos || tempEmail.find('.') == string::npos) {
-                            cout << "Invalid email format" << endl;
-                        }
-                    phonebook[totalContacts].setDetails(tempName, tempPhone, tempEmail);
-                    totalContacts++;
-                    
-                    ofstream outFile("contacts.txt", ios::app); 
+
+                    if (!isValidEmail(tempEmail)) {
+                        cout << "Invalid email format!" << endl;
+                        cout << "Example: name@gmail.com" << endl;
+                    }
+
+                } while (!isValidEmail(tempEmail));
+
+                phonebook[totalContacts].setDetails(tempName, tempPhone, tempEmail);
+                totalContacts++;
+
+                ofstream outFile("contacts.txt", ios::app);
+                if (outFile.is_open()) {
+                    outFile << tempName << "," 
+                            << tempPhone << "," 
+                            << tempEmail << endl;
+                    outFile.close();
+                }
+
+                cout << "Contact saved successfully!" << endl;
+            }
+            else {
+                cout << "Phonebook is full!" << endl;
+            }
+            break;
+
+        case 2:
+            if (totalContacts == 0) {
+                cout << "Your phonebook is empty." << endl;
+            }
+            else {
+                cout << "\n--- Saved Contacts ---" << endl;
+                for (int i = 0; i < totalContacts; i++) {
+                    cout << i + 1 << ". ";
+                    displayContact(phonebook[i]);
+                }
+            }
+            break;
+
+        case 3: {
+            if (totalContacts == 0) {
+                cout << "Your phonebook is empty." << endl;
+                break;
+            }
+
+            string searchName;
+            bool found = false;
+            cin.ignore();
+            cout << "Enter the Exact Name to Search: ";
+            getline(cin, searchName);
+
+            for (int i = 0; i < totalContacts; i++) {
+                if (phonebook[i].getName() == searchName) {
+                    cout << "\n--- Contact Found ---" << endl;
+                    displayContact(phonebook[i]);
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                cout << "Contact not found." << endl;
+            }
+            break;
+        }
+
+        case 4: {
+            if (totalContacts == 0) {
+                cout << "Your phonebook is empty." << endl;
+                break;
+            }
+
+            string deleteName;
+            bool found = false;
+            cin.ignore();
+            cout << "Enter the Exact Name to Delete: ";
+            getline(cin, deleteName);
+
+            for (int i = 0; i < totalContacts; i++) {
+                if (phonebook[i].getName() == deleteName) {
+
+                    for (int j = i; j < totalContacts - 1; j++) {
+                        phonebook[j] = phonebook[j + 1];
+                    }
+
+                    totalContacts--;
+                    found = true;
+
+                    ofstream outFile("contacts.txt");
                     if (outFile.is_open()) {
-                        outFile << tempName << "," << tempPhone << "," << tempEmail << endl;
+                        for (int k = 0; k < totalContacts; k++) {
+                            outFile << phonebook[k].getName() << ","
+                                    << phonebook[k].getPhone() << ","
+                                    << phonebook[k].getEmail() << endl;
+                        }
                         outFile.close();
                     }
-                    cout << "Contact saved successfully!" << endl;
-                } else {
-                    cout << "Phonebook is full!" << endl;
-                }
-                break;
 
-            case 2:
-                if (totalContacts == 0) {
-                    cout << "Your phonebook is empty." << endl;
-                } else {
-                    cout << "\n--- Saved Contacts ---" << endl;
-                    cout<< "       NAME         PHONE         EMAIL" << endl;
-                    for (int i = 0; i < totalContacts; i++) {
-                        cout << i + 1 << ". ";
-                        displayContact(phonebook[i]); 
-                    }
-                }
-                break;
-
-            case 3: {
-                    if (totalContacts == 0) {
-                    cout << "Your phonebook is empty." << endl;
+                    cout << "Contact deleted successfully." << endl;
                     break;
                 }
-                
-                string searchName;
-                bool found = false;
-                cin.ignore();
-                cout << "Enter the Exact Name to Search: ";
-                getline(cin, searchName);
-
-                for (int i = 0; i < totalContacts; i++) {
-                    if (phonebook[i].getName() == searchName) {
-                        cout << "\n--- Contact Found ---" << endl;
-                        displayContact(phonebook[i]);
-                        found = true;
-                        break;
-                    }
-                }
-
-                if (!found) {
-                    cout << "Contact not found (T_T) " << endl;
-                }
-                break;
             }
 
-            case 4: {
-                if (totalContacts == 0) {
-                    cout << "Your phonebook is empty" << endl;
-                    break;
-                }
-
-                string deleteName;
-                bool found = false;
-                cin.ignore();
-                cout << "Enter the Exact Name to Delete: ";
-                getline(cin, deleteName);
-
-                for (int i = 0; i < totalContacts; i++) {
-                    if (phonebook[i].getName() == deleteName) {
-                        found = true;
-                        
-                        for (int j = i; j < totalContacts - 1; j++) {
-                            phonebook[j] = phonebook[j + 1]; 
-                        }
-                        
-                        totalContacts--; // Reduce the total count
-                        cout << "Contact deleted successfully." << endl;
-
-                        // Overwrite the text file with the newly updated array
-                        ofstream outFile("contacts.txt"); 
-                        if (outFile.is_open()) {
-                            for (int k = 0; k < totalContacts; k++) {
-                                outFile << phonebook[k].getName() << "," 
-                                        << phonebook[k].getPhone() << "," 
-                                        << phonebook[k].getEmail() << endl;
-                            }
-                            outFile.close();
-                        }
-                        break; 
-                    }
-                }
-
-                if (!found) {
-                    cout << "Contact not found. No deletion made." << endl;
-                }
-                break;
+            if (!found) {
+                cout << "Contact not found." << endl;
             }
-
-            case 5:
-                cout << "Exiting the program. Goodbye!" << endl;
-                break;
-
-            default:
-                cout << "Invalid choice! Please try again." << endl;
+            break;
         }
+
+        case 5:
+            cout << "Exiting the program. Goodbye!" << endl;
+            break;
+
+        default:
+            cout << "Invalid choice!" << endl;
+        }
+
     } while (choice != 5);
 
     return 0;
