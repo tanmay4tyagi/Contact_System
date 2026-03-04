@@ -2,7 +2,8 @@
 #include <string>
 #include <fstream>
 #include <cctype>
-
+#include <thread>
+#include <chrono>
 using namespace std;
 
 // ================= BASE CLASS =================
@@ -40,7 +41,7 @@ public:
     }
 
     string getName() { return name; }
-    string getPhone() { return phone; }
+    string getPhone() { return phone; } 
     string getEmail() { return email; }
 
     friend void displayContact(Contact c);
@@ -85,6 +86,13 @@ bool isValidEmail(string email) {
 
     return true;
 }
+// typewriter animation
+void typewriter(const string &text, int delay = 30) {
+    for (char ch : text) {
+        cout << ch << flush;
+        this_thread::sleep_for(chrono::milliseconds(delay));
+    }
+}
 
 // ================= MAIN =================
 int main() {
@@ -93,7 +101,7 @@ int main() {
     int totalContacts = 0;
     int choice;
 
-    // Load contacts from file
+    // Load contacts from file 
     ifstream inFile("contacts.txt");
     if (inFile.is_open()) {
         string n, p, e;
@@ -108,12 +116,15 @@ int main() {
     }
 
     do {
-        cout << "\n--- Advanced Contact Management System ---" << endl;
+        cout << "\033[1;32m";  // Green color
+typewriter("\n--- Advanced Contact Management System ---\n", 20);
+cout << "\033[0m";     // Reset color
         cout << "1. Add a New Contact" << endl;
         cout << "2. Display All Contacts" << endl;
         cout << "3. Search for a Contact" << endl;
         cout << "4. Delete a Contact" << endl;
-        cout << "5. Exit" << endl;
+        cout << "5. Edit a Contact" << endl;
+        cout << "6. Exit" << endl;
         cout << "Enter your choice: ";
         cin >> choice;
 
@@ -253,15 +264,83 @@ int main() {
             break;
         }
 
-        case 5:
-            cout << "Exiting the program. Goodbye!" << endl;
-            break;
+        case 5: {
+    if (totalContacts == 0) {
+        cout << "Your phonebook is empty." << endl;
+        break;
+    }
 
+    string editName;
+    bool found = false;
+    cin.ignore();
+
+    cout << "Enter the Exact Name to Edit: ";
+    getline(cin, editName);
+
+    for (int i = 0; i < totalContacts; i++) {
+        if (phonebook[i].getName() == editName) {
+
+            string newName, newPhone, newEmail;
+
+            cout << "Enter New Name: ";
+            getline(cin, newName);
+
+            // Phone validation
+            do {
+                cout << "Enter New Phone (+CountryCodeNumber): ";
+                getline(cin, newPhone);
+
+                if (!isValidPhone(newPhone))
+                    cout << "Invalid phone number!" << endl;
+
+            } while (!isValidPhone(newPhone));
+
+            // Email validation
+            do {
+                cout << "Enter New Email: ";
+                getline(cin, newEmail);
+
+                if (!isValidEmail(newEmail))
+                    cout << "Invalid email format!" << endl;
+
+            } while (!isValidEmail(newEmail));
+
+            phonebook[i].setDetails(newName, newPhone, newEmail);
+            found = true;
+
+            // Rewrite entire file
+            ofstream outFile("contacts.txt");
+            if (outFile.is_open()) {
+                for (int k = 0; k < totalContacts; k++) {
+                    outFile << phonebook[k].getName() << ","
+                            << phonebook[k].getPhone() << ","
+                            << phonebook[k].getEmail() << endl;
+                }
+                outFile.close();
+            }
+
+            cout << "Contact updated successfully!" << endl;
+            break;
+        }
+    }
+
+    if (!found)
+        cout << "Contact not found." << endl;
+
+    break;
+}
+
+        case 6:
+    cout << "\nTotal Contacts Registered: " 
+         << totalContacts << endl;
+
+    cout << "Exiting the program. Goodbye!" << endl;
+    break;
         default:
             cout << "Invalid choice!" << endl;
         }
 
-    } while (choice != 5);
+    } while (choice != 6);
 
     return 0;
 }
