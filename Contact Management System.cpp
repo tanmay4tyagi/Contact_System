@@ -2,8 +2,7 @@
 #include <string>
 #include <fstream>
 #include <cctype>
-#include <thread>
-#include <chrono>
+
 using namespace std;
 
 // ================= BASE CLASS =================
@@ -48,18 +47,19 @@ public:
 };
 
 void displayContact(Contact c) {
-    cout << c.name << " | " << c.phone << " | " << c.email << endl;
+     cout << c.name << " | " << c.phone << " | " << c.email << endl;
 }
 
 // ================= VALIDATION FUNCTIONS =================
 bool isValidPhone(string phone) {
 
-    if (phone.empty()) return false;
+    if (phone.empty()) 
+        return false;
 
     if (phone[0] != '+')
         return false;
 
-    if (phone.length() < 12)
+    if (phone.length() < 10)
         return false;
 
     for (int i = 1; i < phone.length(); i++) {
@@ -86,14 +86,8 @@ bool isValidEmail(string email) {
 
     return true;
 }
-// typewriter animation
-void typewriter(const string &text, int delay = 30) {
-    for (char ch : text) {
-        cout << ch << flush;
-        this_thread::sleep_for(chrono::milliseconds(delay));
-    }
-}
 
+ 
 // ================= MAIN =================
 int main() {
 
@@ -105,6 +99,7 @@ int main() {
     ifstream inFile("contacts.txt");
     if (inFile.is_open()) {
         string n, p, e;
+        
         while (getline(inFile, n, ',') &&
                getline(inFile, p, ',') &&
                getline(inFile, e)) {
@@ -117,7 +112,7 @@ int main() {
 
     do {
         cout << "\033[1;32m";  // Green color
-typewriter("\n--- Advanced Contact Management System ---\n", 20);
+        cout << "\n--- Advanced Contact Management System ---\n";
 cout << "\033[0m";     // Reset color
         cout << "1. Add a New Contact" << endl;
         cout << "2. Display All Contacts" << endl;
@@ -187,6 +182,7 @@ cout << "\033[0m";     // Reset color
             }
             else {
                 cout << "\n--- Saved Contacts ---" << endl;
+
                 for (int i = 0; i < totalContacts; i++) {
                     cout << i + 1 << ". ";
                     displayContact(phonebook[i]);
