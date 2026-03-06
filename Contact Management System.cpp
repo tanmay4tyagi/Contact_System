@@ -47,7 +47,7 @@ public:
 };
 
 void displayContact(Contact c) {
-     cout << c.name << " | " << c.phone << " | " << c.email << endl;
+     cout << c.name << "  \t" << c.phone << "  \t" << c.email << endl;
 }
 
 // ================= VALIDATION FUNCTIONS =================
@@ -181,7 +181,7 @@ int main() {
             }
             else {
                 cout << "\n--- Saved Contacts ---" << endl;
-                cout << "No.|     Name     |     Phone     |     Email" << endl;
+                cout << "No.    Name                 Phone            Email" << endl;
                 for (int i = 0; i < totalContacts; i++) {
                     cout << i + 1 << ". ";
                     displayContact(phonebook[i]);
