@@ -29,7 +29,7 @@ private:
     string email;
 
 public:
-    Contact() : Person() {
+    Contact() {
         email = "Unknown";
     }
 
