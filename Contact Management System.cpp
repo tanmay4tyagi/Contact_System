@@ -47,7 +47,7 @@ public:
 };
 
 void displayContact(Contact c) {
-     cout << c.name << " | " << c.phone << " | " << c.email << endl;
+     cout << c.name << "  \t" << c.phone << "  \t" << c.email << endl;
 }
 
 // ================= VALIDATION FUNCTIONS =================
@@ -87,7 +87,6 @@ bool isValidEmail(string email) {
     return true;
 }
 
- 
 // ================= MAIN =================
 int main() {
 
@@ -122,6 +121,7 @@ int main() {
         cout << "6. Exit" << endl;
         cout << "Enter your choice: ";
         cin >> choice;
+        cin.ignore(); // Clear newline from input buffer
 
         switch (choice) {
 
@@ -182,7 +182,7 @@ int main() {
             }
             else {
                 cout << "\n--- Saved Contacts ---" << endl;
-                cout << "No. | Name | Phone | Email" << endl;
+                cout << "No.    Name                 Phone            Email" << endl;
                 for (int i = 0; i < totalContacts; i++) {
                     cout << i + 1 << ". ";
                     displayContact(phonebook[i]);
