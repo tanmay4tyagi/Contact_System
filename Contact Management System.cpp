@@ -121,7 +121,7 @@ int main() {
         cout << "6. Exit" << endl;
         cout << "Enter your choice: ";
         cin >> choice;
-        cin.ignore(); // Clear newline from input buffer
+        cin.ignore();
 
         switch (choice) {
 
