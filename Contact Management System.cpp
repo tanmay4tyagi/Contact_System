@@ -107,7 +107,7 @@ int main() {
     }
 
     do {
-        cout << "\033[1;32m";  // Green color
+        
         cout << "\n--- Advanced Contact Management System ---\n";
         cout << "\033[0m";     // Reset color
         cout << "1. Add a New Contact" << endl;
