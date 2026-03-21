@@ -65,7 +65,6 @@ bool isValidPhone(string phone) {
         if (!isdigit(phone[i]))
             return false;
     }
-
     return true;
 }
 
@@ -82,7 +81,6 @@ bool isValidEmail(string email) {
 
     if (dotPos == email.length() - 1)
         return false;
-
     return true;
 }
 
