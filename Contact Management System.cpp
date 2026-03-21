@@ -2,7 +2,6 @@
 #include <string>
 #include <fstream>
 #include <cctype>
-
 using namespace std;
 
 // ================= BASE CLASS =================
