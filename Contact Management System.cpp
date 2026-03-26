@@ -194,13 +194,16 @@ int main() {
             }
 
             string searchName;
+            string searchPhone;
             bool found = false;
+            
             cin.ignore();
             cout << "Enter the Exact Name to Search: ";
             getline(cin, searchName);
-
+            cout << "Enter the Exact Phone Number to Search: ";
+            getline(cin, searchPhone);
             for (int i = 0; i < totalContacts; i++) {
-                if (phonebook[i].getName() == searchName) {
+                if (phonebook[i].getName() == searchName && phonebook[i].getPhone() == searchPhone) {
                     cout << "\n--- Contact Found ---" << endl;
                     displayContact(phonebook[i]);
                     found = true;
